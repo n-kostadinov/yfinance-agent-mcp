@@ -1,10 +1,13 @@
 name: Release
 
 # Pushing a tag vX.Y.Z publishes that version to PyPI, the MCP Registry and GitHub Releases.
-# See docs/development/releasing.md for the one-time setup.
+# yfinance-update.yml starts it on a tag with workflow_dispatch instead, because a tag pushed
+# with GITHUB_TOKEN triggers no workflow; on any ref other than a version tag, the tag check
+# fails before anything is published. See docs/development/releasing.md.
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:
 
 permissions:
   contents: read

@@ -111,3 +111,74 @@ def test_repository_changelog_has_notes_for_the_pyproject_version() -> None:
     notes = release_notes.section(changelog, pyproject["project"]["version"])
 
     assert notes.startswith("### ")
+
+
+UNRELEASED = """\
+# Changelog
+
+## [Unreleased]
+
+### Added
+
+- A new tool.
+
+### Fixed
+
+- A crash.
+
+## [1.0.0] - 2026-11-24
+
+### Added
+
+- The first release.
+
+[Unreleased]: https://example.com/compare/v1.0.0...HEAD
+[1.0.0]: https://example.com/releases/tag/v1.0.0
+"""
+
+CHANGE = "Require yfinance 1.9.0 or later."
+
+
+def test_add_release_moves_the_unreleased_entries_and_puts_changed_before_fixed() -> None:
+    changelog = release_notes.add_release(UNRELEASED, "1.0.1", "2026-12-01", CHANGE)
+
+    assert "## [Unreleased]\n\n## [1.0.1] - 2026-12-01\n\n### Added" in changelog
+    assert release_notes.section(changelog, "1.0.1") == (
+        "### Added\n\n- A new tool.\n\n### Changed\n\n- Require yfinance 1.9.0 or later.\n\n"
+        "### Fixed\n\n- A crash.\n"
+    )
+    assert release_notes.section(changelog, "1.0.0") == "### Added\n\n- The first release.\n"
+
+
+def test_add_release_adds_to_an_existing_changed_subsection() -> None:
+    changelog = UNRELEASED.replace("### Fixed\n\n- A crash.", "### Changed\n\n- Faster quotes.")
+
+    released = release_notes.add_release(changelog, "1.0.1", "2026-12-01", CHANGE)
+
+    assert release_notes.section(released, "1.0.1") == (
+        "### Added\n\n- A new tool.\n\n### Changed\n\n- Faster quotes.\n"
+        "- Require yfinance 1.9.0 or later.\n"
+    )
+
+
+def test_add_release_with_nothing_unreleased_lists_only_the_change() -> None:
+    changelog = UNRELEASED.replace("### Added\n\n- A new tool.\n\n### Fixed\n\n- A crash.\n\n", "")
+
+    released = release_notes.add_release(changelog, "1.0.1", "2026-12-01", CHANGE)
+
+    assert release_notes.section(released, "1.0.1") == f"### Changed\n\n- {CHANGE}\n"
+
+
+def test_add_release_points_the_comparison_links_at_the_new_version() -> None:
+    changelog = release_notes.add_release(UNRELEASED, "1.0.1", "2026-12-01", CHANGE)
+
+    assert changelog.endswith(
+        "[Unreleased]: https://example.com/compare/v1.0.1...HEAD\n"
+        "[1.0.1]: https://example.com/compare/v1.0.0...v1.0.1\n"
+        "[1.0.0]: https://example.com/releases/tag/v1.0.0\n"
+    )
+
+
+def test_add_release_without_an_unreleased_section_raises_lookup_error() -> None:
+    with pytest.raises(LookupError, match=r"no \[Unreleased\] section"):
+        release_notes.add_release(CHANGELOG.replace("## [Unreleased]\n", ""), "1.1.1", "x", CHANGE)

@@ -62,6 +62,56 @@ Nothing to register up front. The workflow logs in with GitHub OIDC, which prove
 of the `io.github.n-kostadinov/` namespace, and the registry checks the
 `<!-- mcp-name: ... -->` marker in the README published on PyPI.
 
+## Automatic releases
+
+`.github/workflows/yfinance-update.yml` runs every day at 05:41 UTC and on demand
+(Actions → **yfinance update** → **Run workflow**). It releases a new patch version whenever
+yfinance publishes a release this project can adopt:
+
+1. `scripts/update_yfinance.py check` reads yfinance's releases from PyPI and picks the
+   newest one that is final (no pre-releases), has files, is not yanked, is newer than the
+   current `yfinance>=` floor and below the `<2` cap, and has been out for at least 3 days,
+   so a broken or compromised upload has time to be pulled.
+2. `scripts/update_yfinance.py apply X` bumps the patch version in every versioned file,
+   raises the requirement to `yfinance>=X,<2` and re-locks `uv.lock`, and moves the
+   `[Unreleased]` entries into a new CHANGELOG section with a "Require yfinance X or later"
+   entry. The result is committed to a branch `automation/yfinance-X`.
+3. The whole `ci.yml` and the live tests (`live.yml`) run against that commit.
+4. If both pass, the workflow fast-forwards `main` to the tested commit, pushes the tag
+   `vX.Y.Z`, starts the **Release** workflow on the tag and the **Docs** workflow on `main`,
+   and deletes the branch. It starts them itself because a tag pushed with `GITHUB_TOKEN`
+   triggers no workflow.
+
+When something fails, nothing reaches `main` or PyPI: the run turns red, GitHub emails you,
+the branch stays for inspection, and the next day's run starts over. If `main` moved while
+the tests ran, the fast-forward is refused and the next run rebuilds on the new `main`.
+
+A yfinance release at or above the cap (a new major version) is never adopted: the workflow
+opens one issue for it instead, so you can check the changes, raise the cap and release by
+hand.
+
+A manual run has two options:
+
+| Option | Effect |
+|---|---|
+| `dry_run` | Prepare and test the update, then delete the branch and release nothing. |
+| `live_tests` | Clear it to release without the live tests, for example while Yahoo throttles GitHub's runners. |
+
+A run on any branch other than `main` never releases. To see the whole flow without
+releasing, lower the floor on a scratch branch (`uv add "yfinance>=1.7.0,<2" --no-sync`) and
+start a dry run on it.
+
+Things to know:
+
+- GitHub turns off scheduled workflows in a public repository after 60 days without
+  activity, after an email warning. Turn it back on with
+  `gh workflow enable yfinance-update.yml`.
+- Dependabot ignores yfinance, so updates come only from this workflow.
+- If you protect `main` later, let `github-actions[bot]` bypass the rule, or the
+  fast-forward fails.
+- Adding a required reviewer to the `pypi` environment makes each automatic release wait
+  for one click.
+
 ## Release a version
 
 1. Bump the version everywhere it appears:

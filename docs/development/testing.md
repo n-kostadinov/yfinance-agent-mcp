@@ -51,3 +51,7 @@ that a 429 becomes `rate_limited` and pauses further requests, that missing pric
 The `ci.yml` workflow runs the offline suite with coverage on Ubuntu, Windows and macOS for
 Python 3.11 to 3.14. `live.yml` runs the live tests nightly and on demand, because Yahoo's
 availability should not block pull requests.
+
+`yfinance-update.yml` calls both workflows against the commit that adopts a new yfinance
+release, and releases only when both pass; see
+[automatic releases](releasing.md#automatic-releases).

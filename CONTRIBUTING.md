@@ -52,5 +52,5 @@ fails otherwise.
 - Add a line under `## [Unreleased]` in `CHANGELOG.md`.
 - Describe how you verified the change.
 
-Releases are made by the maintainer; see
-[Releasing](https://n-kostadinov.github.io/yfinance-agent-mcp/development/releasing/).
+Releases are made by the maintainer, and automatically when yfinance publishes a new
+release; see [Releasing](https://n-kostadinov.github.io/yfinance-agent-mcp/development/releasing/).

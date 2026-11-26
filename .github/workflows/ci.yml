@@ -5,12 +5,22 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # yfinance-update.yml runs the whole CI against the commit it wants to release.
+  workflow_call:
+    inputs:
+      ref:
+        description: Commit to test; empty means the commit that triggered the run
+        type: string
+        required: false
+        default: ""
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
+  # When called, github.workflow is the caller's name, so a called run never waits behind,
+  # or replaces, a normal CI run on the same ref.
+  group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
@@ -25,6 +35,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ inputs.ref }}
           persist-credentials: false
 
       - name: Install uv
@@ -63,6 +74,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ inputs.ref }}
           persist-credentials: false
 
       - name: Install uv and Python ${{ matrix.python }}
@@ -92,6 +104,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ inputs.ref }}
           persist-credentials: false
 
       - name: Install uv

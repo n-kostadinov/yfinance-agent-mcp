@@ -10,6 +10,12 @@ All notable changes to this project are documented here. The format follows
 
 - Acknowledgements for [yfinance](https://github.com/ranaroussi/yfinance) by Ran Aroussi
   and its contributors in the README, the documentation home page and the FAQ.
+- Automatic releases: a daily workflow adopts each new yfinance release, runs the full CI
+  and the live tests against it, and publishes a patch release that requires it.
+
+### Changed
+
+- The release workflow can also be started by hand on a version tag.
 
 ## [0.1.0] - 2026-11-26
 

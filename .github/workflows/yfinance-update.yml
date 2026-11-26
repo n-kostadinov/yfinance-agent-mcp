@@ -1,0 +1,182 @@
+name: yfinance update
+
+# Adopts a new yfinance release: raises the yfinance requirement, bumps the patch version and
+# writes the CHANGELOG on a branch, runs the whole CI and the live tests against that commit,
+# then fast-forwards main, tags it and starts the release and docs workflows. A run that
+# fails releases nothing; the next day's run tries again. See docs/development/releasing.md.
+on:
+  schedule:
+    - cron: "41 5 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Prepare and test the update, but release nothing
+        type: boolean
+        default: false
+      live_tests:
+        description: Run the live tests against Yahoo Finance before releasing
+        type: boolean
+        default: true
+
+permissions: {}
+
+concurrency:
+  group: yfinance-update
+  cancel-in-progress: false
+
+env:
+  UV_VERSION: "0.13.9"
+
+jobs:
+  prepare:
+    name: Find and apply a new yfinance release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write # push the candidate branch
+      issues: write # report a new yfinance major version
+    outputs:
+      version: ${{ steps.check.outputs.version }}
+      release: ${{ steps.apply.outputs.release }}
+      branch: ${{ steps.push.outputs.branch }}
+      sha: ${{ steps.push.outputs.sha }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: true # the push step below uses them
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: Look for a new yfinance release on PyPI
+        id: check
+        run: python3 scripts/update_yfinance.py check
+
+      - name: Report a new yfinance major version
+        if: steps.check.outputs.major != '' && !inputs.dry_run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MAJOR: ${{ steps.check.outputs.major }}
+        run: |
+          title="yfinance $MAJOR is out: review it before raising the <2 cap"
+          known=$(gh issue list --state all --limit 200 --json title \
+            | jq --arg title "$title" 'map(select(.title == $title)) | length')
+          if [ "$known" = "0" ]; then
+            gh issue create --title "$title" --body "yfinance $MAJOR is on PyPI \
+          (https://pypi.org/project/yfinance/$MAJOR/). The automatic update only adopts releases \
+          below the cap in pyproject.toml, so check the changes, raise the cap and release by hand."
+          fi
+
+      - name: Require the new release and bump the version
+        id: apply
+        if: steps.check.outputs.version != ''
+        env:
+          VERSION: ${{ steps.check.outputs.version }}
+        run: python3 scripts/update_yfinance.py apply "$VERSION"
+
+      - name: Push the candidate branch
+        id: push
+        if: steps.check.outputs.version != ''
+        env:
+          VERSION: ${{ steps.check.outputs.version }}
+          RELEASE: ${{ steps.apply.outputs.release }}
+        run: |
+          branch="automation/yfinance-$VERSION"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit --all --message "Require yfinance $VERSION and release $RELEASE"
+          git push --force origin "HEAD:refs/heads/$branch"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Summary
+        env:
+          VERSION: ${{ steps.check.outputs.version }}
+          RELEASE: ${{ steps.apply.outputs.release }}
+          MAJOR: ${{ steps.check.outputs.major }}
+        run: |
+          if [ -n "$VERSION" ]; then
+            echo "Testing yfinance $VERSION as release $RELEASE." >> "$GITHUB_STEP_SUMMARY"
+          else
+            current=$(grep -o 'yfinance>=[^",]*' pyproject.toml)
+            echo "No newer yfinance release to adopt; the project requires $current." \
+              >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -n "$MAJOR" ]; then
+            echo "yfinance $MAJOR is at or above the cap and needs a manual review." \
+              >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  ci:
+    name: CI
+    needs: prepare
+    if: needs.prepare.outputs.version != ''
+    permissions:
+      contents: read
+    uses: ./.github/workflows/ci.yml
+    with:
+      ref: ${{ needs.prepare.outputs.sha }}
+
+  live:
+    name: Live tests
+    needs: prepare
+    if: needs.prepare.outputs.version != '' && (github.event_name == 'schedule' || inputs.live_tests)
+    permissions:
+      contents: read
+    uses: ./.github/workflows/live.yml
+    with:
+      ref: ${{ needs.prepare.outputs.sha }}
+
+  release:
+    name: Release
+    needs: [prepare, ci, live]
+    if: >-
+      always() && needs.prepare.outputs.version != '' && needs.ci.result == 'success'
+      && (needs.live.result == 'success' || needs.live.result == 'skipped')
+      && github.ref == 'refs/heads/main' && !inputs.dry_run
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write # move main, create the tag, delete the branch
+      actions: write # start release.yml and docs.yml
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      SHA: ${{ needs.prepare.outputs.sha }}
+      TAG: v${{ needs.prepare.outputs.release }}
+      BRANCH: ${{ needs.prepare.outputs.branch }}
+    steps:
+      - name: Fast-forward main to the tested commit
+        # force=false: GitHub refuses the update if main has moved since the branch was cut.
+        run: gh api --method PATCH "repos/$GH_REPO/git/refs/heads/main" -f sha="$SHA" -F force=false
+
+      - name: Tag the release
+        run: gh api --method POST "repos/$GH_REPO/git/refs" -f ref="refs/tags/$TAG" -f sha="$SHA"
+
+      - name: Start the release and docs workflows
+        run: |
+          gh workflow run release.yml --ref "$TAG"
+          gh workflow run docs.yml --ref main
+          echo "Released $TAG: watch the Release workflow." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Delete the candidate branch
+        run: gh api --method DELETE "repos/$GH_REPO/git/refs/heads/$BRANCH"
+
+  cleanup:
+    name: Delete the candidate branch
+    needs: [prepare, ci, live]
+    # Runs when no release will happen anyway; a failed run keeps the branch for inspection.
+    if: always() && needs.prepare.outputs.branch != '' && (inputs.dry_run || github.ref != 'refs/heads/main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write # delete the branch
+    steps:
+      - name: Delete the candidate branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ needs.prepare.outputs.branch }}
+        run: gh api --method DELETE "repos/${{ github.repository }}/git/refs/heads/$BRANCH"

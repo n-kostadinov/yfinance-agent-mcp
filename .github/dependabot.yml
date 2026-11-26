@@ -11,6 +11,9 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    # yfinance-update.yml adopts new yfinance releases and releases them.
+    ignore:
+      - dependency-name: yfinance
     groups:
       python:
         patterns: ["*"]
