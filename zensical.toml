@@ -1,0 +1,173 @@
+[project]
+site_name = "yfinance-agent-mcp"
+site_url = "https://n-kostadinov.github.io/yfinance-agent-mcp/"
+site_description = "Read-only Yahoo Finance MCP server for AI trading-research agents: quotes, price history with indicators, news, screeners and fundamentals."
+site_author = "Nikolay Kostadinov"
+copyright = "Copyright &copy; 2026 Nikolay Kostadinov · MIT License · Not affiliated with Yahoo"
+repo_url = "https://github.com/n-kostadinov/yfinance-agent-mcp"
+repo_name = "n-kostadinov/yfinance-agent-mcp"
+edit_uri = "edit/main/docs/"
+nav = [
+  { "Home" = "index.md" },
+  { "Getting started" = [
+    { "Installation" = "getting-started/installation.md" },
+    { "Quickstart" = "getting-started/quickstart.md" },
+  ] },
+  { "Clients" = [
+    { "Claude Code" = "clients/claude-code.md" },
+    { "Claude Desktop" = "clients/claude-desktop.md" },
+    { "Cursor" = "clients/cursor.md" },
+    { "VS Code" = "clients/vscode.md" },
+    { "Windsurf" = "clients/windsurf.md" },
+    { "Claude Agent SDK" = "clients/claude-agent-sdk.md" },
+    { "Other clients" = "clients/other-clients.md" },
+  ] },
+  { "Tools" = [
+    { "Overview" = "tools/index.md" },
+    { "search_symbols" = "tools/search_symbols.md" },
+    { "get_quotes" = "tools/get_quotes.md" },
+    { "get_market_overview" = "tools/get_market_overview.md" },
+    { "get_price_history" = "tools/get_price_history.md" },
+    { "get_news" = "tools/get_news.md" },
+    { "screen_securities" = "tools/screen_securities.md" },
+    { "get_sector_industry" = "tools/get_sector_industry.md" },
+    { "get_events" = "tools/get_events.md" },
+    { "get_fundamentals" = "tools/get_fundamentals.md" },
+    { "get_analyst_view" = "tools/get_analyst_view.md" },
+    { "get_options" = "tools/get_options.md" },
+    { "get_ticker_dataset" = "tools/get_ticker_dataset.md" },
+    { "get_live_quotes" = "tools/get_live_quotes.md" },
+  ] },
+  { "Guides" = [
+    { "Building a research agent" = "guides/research-agent.md" },
+    { "Data freshness" = "guides/data-freshness.md" },
+    { "Rate limits and caching" = "guides/rate-limits-and-caching.md" },
+    { "Untrusted news" = "guides/untrusted-news.md" },
+    { "Plugin and skill" = "guides/plugin-and-skill.md" },
+    { "Troubleshooting" = "guides/troubleshooting.md" },
+  ] },
+  { "Reference" = [
+    { "Configuration" = "configuration.md" },
+    { "Architecture" = "architecture.md" },
+    { "FAQ" = "faq.md" },
+    { "Disclaimer" = "disclaimer.md" },
+    { "Changelog" = "changelog.md" },
+  ] },
+  { "Development" = [
+    { "Contributing" = "development/contributing.md" },
+    { "Testing" = "development/testing.md" },
+    { "Releasing" = "development/releasing.md" },
+    { "Writing the docs" = "development/docs.md" },
+    { "SEO checklist" = "development/seo-checklist.md" },
+  ] },
+]
+
+[project.theme]
+custom_dir = "overrides"
+language = "en"
+logo = "assets/logo.svg"
+favicon = "assets/favicon.svg"
+features = [
+  "content.action.edit",
+  "content.code.annotate",
+  "content.code.copy",
+  "content.tabs.link",
+  "content.tooltips",
+  "navigation.footer",
+  "navigation.indexes",
+  "navigation.instant",
+  "navigation.instant.prefetch",
+  "navigation.path",
+  "navigation.sections",
+  "navigation.tabs",
+  "navigation.top",
+  "navigation.tracking",
+  "search.highlight",
+  "search.suggest",
+  "toc.follow",
+]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme)"
+toggle.icon = "lucide/sun-moon"
+toggle.name = "Switch to light mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "teal"
+accent = "amber"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+primary = "teal"
+accent = "amber"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to system preference"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/github"
+link = "https://github.com/n-kostadinov/yfinance-agent-mcp"
+name = "Source code on GitHub"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/python"
+link = "https://pypi.org/project/yfinance-agent-mcp/"
+name = "Package on PyPI"
+
+[project.markdown_extensions]
+abbr = {}
+admonition = {}
+attr_list = {}
+def_list = {}
+footnotes = {}
+md_in_html = {}
+toc.permalink = true
+pymdownx.details = {}
+pymdownx.highlight.anchor_linenums = true
+pymdownx.highlight.line_spans = "__span"
+pymdownx.highlight.pygments_lang_class = true
+pymdownx.inlinehilite = {}
+pymdownx.keys = {}
+# Includes CHANGELOG.md and CONTRIBUTING.md from the repository root.
+pymdownx.snippets.base_path = ["."]
+pymdownx.snippets.check_paths = true
+pymdownx.superfences.custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+]
+pymdownx.tabbed.alternate_style = true
+pymdownx.tabbed.combine_header_slug = true
+pymdownx.tasklist.custom_checkbox = true
+
+# Every page also sets its own `description` in front matter (50-160 characters).
+[project.plugins.meta-descriptions]
+trim = true
+
+# Open Graph and Twitter cards with a generated 1200x630 image per page.
+[project.plugins.social]
+
+# llms.txt: an index of the docs for AI assistants, plus Markdown copies of the pages.
+[project.plugins.llmstxt]
+markdown_description = "yfinance-agent-mcp is a read-only Model Context Protocol server that gives AI agents Yahoo Finance market data through yfinance. Run it with `uvx yfinance-agent-mcp`."
+[project.plugins.llmstxt.sections]
+"Start here" = [
+  { "index.md" = "What the server does, why, and how to install it" },
+  "getting-started/*.md",
+]
+"Clients" = ["clients/*.md"]
+"Tools" = [
+  { "tools/index.md" = "All tools at a glance, shared answer fields, errors" },
+  "tools/*.md",
+]
+"Guides" = ["guides/*.md"]
+"Reference" = [
+  { "configuration.md" = "Every environment variable and cache expiry time" },
+  { "architecture.md" = "How the server is built and why" },
+  { "faq.md" = "Frequently asked questions" },
+  { "disclaimer.md" = "Not affiliated with Yahoo; personal use; not investment advice" },
+  { "changelog.md" = "Changes in each release" },
+]
+"Development" = ["development/*.md"]

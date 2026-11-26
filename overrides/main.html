@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+  {{ super() }}
+  {% if page.url == "" %}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "yfinance-agent-mcp",
+      "alternateName": "yfinance MCP server",
+      "description": "Read-only Model Context Protocol server that gives AI agents Yahoo Finance market data through yfinance: quotes, price history with indicators, news, screeners, fundamentals, options and live prices.",
+      "applicationCategory": "DeveloperApplication",
+      "applicationSubCategory": "MCP server",
+      "operatingSystem": "Windows, macOS, Linux",
+      "url": "{{ config.site_url }}",
+      "downloadUrl": "https://pypi.org/project/yfinance-agent-mcp/",
+      "installUrl": "https://pypi.org/project/yfinance-agent-mcp/",
+      "license": "https://opensource.org/licenses/MIT",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "author": {
+        "@type": "Person",
+        "name": "Nikolay Kostadinov",
+        "url": "https://github.com/n-kostadinov"
+      },
+      "sameAs": [
+        "https://github.com/n-kostadinov/yfinance-agent-mcp",
+        "https://pypi.org/project/yfinance-agent-mcp/"
+      ],
+      "keywords": "MCP, Model Context Protocol, yfinance, Yahoo Finance, stock market data, AI agents, trading research, Claude"
+    }
+  </script>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,21 @@
+{
+  "name": "yfinance",
+  "version": "0.1.0",
+  "description": "Yahoo Finance market data via yfinance for research agents: quotes, price history with indicators, news, screeners, fundamentals, options and live prices, plus a market-research skill.",
+  "author": {
+    "name": "Nikolay Kostadinov",
+    "url": "https://github.com/n-kostadinov"
+  },
+  "homepage": "https://n-kostadinov.github.io/yfinance-agent-mcp/",
+  "repository": "https://github.com/n-kostadinov/yfinance-agent-mcp",
+  "license": "MIT",
+  "keywords": [
+    "finance",
+    "stocks",
+    "market-data",
+    "yfinance",
+    "trading",
+    "research",
+    "mcp"
+  ]
+}

@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+build/
+dist/
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.lighthouseci/
+
+# Docs build output
+site/
+.cache/
+
+# Editors and OS
+.idea/
+.DS_Store
+Thumbs.db

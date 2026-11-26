@@ -1,0 +1,23 @@
+name: Feature request
+description: Suggest a tool, a field, or a change that would help agents.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do?
+      description: Describe the agent task, not only the feature.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would help?
+      description: The tool, parameter or output field you have in mind, if any.
+    validations:
+      required: true
+  - type: textarea
+    id: yfinance
+    attributes:
+      label: yfinance support
+      description: Which yfinance call provides this data, if you know.

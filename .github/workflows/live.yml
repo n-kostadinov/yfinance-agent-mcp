@@ -1,0 +1,36 @@
+name: Live tests
+
+# The live tests call Yahoo Finance. They run nightly and on demand rather than on pull
+# requests, so Yahoo's availability or throttling never blocks a change.
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  UV_VERSION: "0.13.9"
+
+jobs:
+  live:
+    name: Live tests against Yahoo Finance
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: Install the project
+        run: uv sync --locked
+
+      - name: Live tests
+        run: uv run pytest -m live -v

@@ -1,0 +1,16 @@
+{
+  "name": "yfinance-agent-mcp",
+  "description": "Claude Code plugin for yfinance-agent-mcp: read-only Yahoo Finance market data tools and a market-research skill for trading-research agents.",
+  "owner": {
+    "name": "Nikolay Kostadinov",
+    "url": "https://github.com/n-kostadinov"
+  },
+  "plugins": [
+    {
+      "name": "yfinance",
+      "source": "./plugins/yfinance",
+      "description": "Yahoo Finance market data via yfinance for research agents: quotes, price history with indicators, news, screeners, fundamentals, options and live prices, plus a market-research skill.",
+      "version": "0.1.0"
+    }
+  ]
+}

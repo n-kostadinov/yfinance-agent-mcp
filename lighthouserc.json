@@ -1,0 +1,25 @@
+{
+  "ci": {
+    "collect": {
+      "staticDistDir": "./site",
+      "url": [
+        "http://localhost/index.html",
+        "http://localhost/tools/index.html",
+        "http://localhost/getting-started/installation/index.html"
+      ],
+      "numberOfRuns": 1,
+      "settings": {
+        "onlyCategories": ["seo"]
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:seo": ["error", { "minScore": 0.95 }]
+      }
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": ".lighthouseci"
+    }
+  }
+}

@@ -1,0 +1,44 @@
+name: Bug report
+description: A tool returned wrong data, an error, or the server failed to start.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Yahoo Finance sometimes changes or throttles its endpoints; if a
+        tool returns `rate_limited`, wait and retry before reporting.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of `uvx yfinance-agent-mcp --version`.
+      placeholder: yfinance-agent-mcp 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: client
+    attributes:
+      label: MCP client
+      description: Claude Code, Claude Desktop, Cursor, VS Code, Agent SDK...
+    validations:
+      required: true
+  - type: textarea
+    id: call
+    attributes:
+      label: Tool call
+      description: The tool name and arguments, and what it returned.
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Server log
+      description: Run with `YFINANCE_AGENT_MCP_LOG_LEVEL=DEBUG` and paste the relevant stderr lines.
+      render: text

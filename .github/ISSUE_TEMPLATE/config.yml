@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://n-kostadinov.github.io/yfinance-agent-mcp/
+    about: Setup guides for each client, the tool reference and troubleshooting.
+  - name: Report a security vulnerability
+    url: https://github.com/n-kostadinov/yfinance-agent-mcp/security/advisories/new
+    about: Please report vulnerabilities privately, not in a public issue.

@@ -1,0 +1,14 @@
+{% extends "main.html" %}
+
+{% block content %}
+  <h1>Page not found</h1>
+  <p>
+    This page does not exist, or it moved. Try the search above, or one of these:
+  </p>
+  <ul>
+    <li><a href="{{ config.site_url }}">Home: what yfinance-agent-mcp does and how to install it</a></li>
+    <li><a href="{{ config.site_url }}tools/">Tool reference: all 13 tools, parameters and examples</a></li>
+    <li><a href="{{ config.site_url }}getting-started/quickstart/">Quickstart: your first tool call</a></li>
+    <li><a href="{{ config.site_url }}guides/troubleshooting/">Troubleshooting</a></li>
+  </ul>
+{% endblock %}
