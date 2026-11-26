@@ -23,3 +23,6 @@ site/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Local planning notes
+/plan/
