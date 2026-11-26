@@ -157,6 +157,15 @@ See the [configuration guide](https://n-kostadinov.github.io/yfinance-agent-mcp/
 
 yfinance-agent-mcp is not affiliated with, endorsed by, or vetted by Yahoo. It uses yfinance, which reads Yahoo Finance's publicly available endpoints; Yahoo's [terms of service](https://legal.yahoo.com/us/en/yahoo/terms/otos/index.html) say the data is for personal use. Data can be delayed, incomplete or wrong. Nothing here is investment advice, and the server cannot trade. Read the full [disclaimer](https://n-kostadinov.github.io/yfinance-agent-mcp/disclaimer/).
 
+## Acknowledgements
+
+This server is built on [yfinance](https://github.com/ranaroussi/yfinance) by Ran Aroussi
+and its contributors, which does the hard work of reading Yahoo Finance. yfinance is
+licensed under the [Apache License 2.0](https://github.com/ranaroussi/yfinance/blob/main/LICENSE.txt);
+see its [documentation](https://ranaroussi.github.io/yfinance/) and
+[PyPI page](https://pypi.org/project/yfinance/). If this server is useful to you, consider
+[sponsoring yfinance's author](https://github.com/sponsors/ranaroussi).
+
 ## Contributing
 
 Issues and pull requests are welcome. See the [contributing guide](https://github.com/n-kostadinov/yfinance-agent-mcp/blob/main/CONTRIBUTING.md) to set up the project with uv and run the tests.

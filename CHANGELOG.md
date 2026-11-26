@@ -6,6 +6,11 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Acknowledgements for [yfinance](https://github.com/ranaroussi/yfinance) by Ran Aroussi
+  and its contributors in the README, the documentation home page and the FAQ.
+
 ## [0.1.0] - 2026-11-26
 
 ### Added

@@ -40,3 +40,18 @@ def test_every_link_and_image_is_absolute_because_pypi_renders_the_readme() -> N
 
 def test_all_thirteen_tools_are_listed() -> None:
     assert [tool for tool in TOOLS if f"`{tool}`" not in README] == []
+
+
+def test_acknowledgements_credit_yfinance_with_its_license_and_links() -> None:
+    acknowledgements = README.partition("## Acknowledgements")[2].partition("\n## ")[0]
+
+    assert "Ran Aroussi" in acknowledgements
+    assert "Apache" in acknowledgements
+    expected_links = [
+        "https://github.com/ranaroussi/yfinance",
+        "https://ranaroussi.github.io/yfinance/",
+        "https://pypi.org/project/yfinance/",
+        "https://github.com/ranaroussi/yfinance/blob/main/LICENSE.txt",
+        "https://github.com/sponsors/ranaroussi",
+    ]
+    assert [link for link in expected_links if f"]({link})" not in acknowledgements] == []

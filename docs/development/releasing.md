@@ -48,7 +48,9 @@ On [PyPI](https://pypi.org/manage/account/publishing/), add a **pending publishe
       --add-topic mcp --add-topic mcp-server --add-topic model-context-protocol \
       --add-topic yfinance --add-topic yahoo-finance --add-topic stock-market \
       --add-topic market-data --add-topic trading --add-topic ai-agents --add-topic llm \
-      --add-topic claude --add-topic python --add-topic finance --add-topic uv
+      --add-topic claude --add-topic python --add-topic finance --add-topic uv \
+      --add-topic stocks --add-topic stock-data --add-topic financial-data \
+      --add-topic claude-code --add-topic mcp-tools --add-topic agentic-ai
     ```
 
 - **Social preview:** upload an image under Settings → General → Social preview (a page card

@@ -44,6 +44,15 @@ documented JSON answers with indicators, freshness fields and actionable errors;
 requests, caches answers, and keeps yfinance's process-wide state safe for a long-running
 agent. See [architecture](architecture.md).
 
+## Which yfinance version does it use?
+
+The newest [yfinance](https://pypi.org/project/yfinance/) 1.x release. Each version of this
+server requires at least the yfinance release it was tested with and below 2.0, and `uvx`
+installs the latest release in that range. A daily workflow adopts each new yfinance
+release once it passes the full test suite, including the live tests, and publishes a new
+version of this server that requires it. Every answer names the yfinance version that
+fetched the data in its `source` field, for example `Yahoo Finance via yfinance 1.8.0`.
+
 ## Why stdio only?
 
 Every common MCP client starts local servers over stdio, and stdio opens no network port, so

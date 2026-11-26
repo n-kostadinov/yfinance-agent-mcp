@@ -3,7 +3,7 @@ title: Yahoo Finance MCP server for AI trading-research agents
 description: yfinance-agent-mcp gives AI agents read-only Yahoo Finance data over MCP - quotes, history with indicators, news, screeners, fundamentals, options.
 ---
 
-# yfinance-agent-mcp
+# yfinance-agent-mcp: Yahoo Finance MCP server for AI agents
 
 **A read-only [Model Context Protocol](https://modelcontextprotocol.io/) server that gives AI
 agents market data from Yahoo Finance through [yfinance](https://github.com/ranaroussi/yfinance).**
@@ -79,6 +79,16 @@ flowchart LR
 
 The server answers research questions. Placing orders belongs in a separate tool that you
 control and gate, which is why this server is read-only.
+
+## Built on yfinance
+
+All market data comes through [yfinance](https://github.com/ranaroussi/yfinance), the
+open-source Python library by Ran Aroussi and its contributors, licensed under the
+[Apache License 2.0](https://github.com/ranaroussi/yfinance/blob/main/LICENSE.txt). This
+server adds what an agent needs on top: small JSON answers, indicators, freshness fields,
+rate limiting and caching. Every answer names the yfinance version in its `source` field.
+Read the [yfinance documentation](https://ranaroussi.github.io/yfinance/), and consider
+[sponsoring its author](https://github.com/sponsors/ranaroussi).
 
 ## Next steps
 
